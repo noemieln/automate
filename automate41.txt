@@ -1,0 +1,12 @@
+0a1
+0b4
+1a2
+1b3
+2a2
+2b3
+3aP
+3bP
+4aP
+4bP
+PaP
+PbP
