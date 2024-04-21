@@ -14,127 +14,6 @@ public class Automate {
 
 
 
-    /* ======================== METHODE loadFromFile BLAINA
-
-
-    public void loadFromFile(String fileName) {
-        try {
-            File file = new File(fileName);
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(",");
-                String stateName = parts[0];
-                boolean isInitial = parts[1].equals("I");
-                boolean isFinal = parts[2].equals("F");
-                Etat etat = new Etat(stateName, isInitial, isFinal);
-                states.add(etat);
-            }
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Fichier introuvable : " + fileName);
-            e.printStackTrace();
-        }
-    }
-
-
-
-    ==========================================================================================*/
-
-
-    //============================== METHODE loadFromFiles RINDRA ==============================================
-
-
-    /*
-
-    public void loadFromFile(String fileName) {
-        try {
-            File file = new File(fileName);
-            Scanner scanner = new Scanner(file);
-
-            // Lire le nombre de symboles dans l'alphabet
-            int numSymbols = Integer.parseInt(scanner.nextLine());
-
-            // Ajouter chaque symbole à l'alphabet (a, b, ..., correspondant au nombre de symboles)
-            for (int i = 0; i < numSymbols; i++) {
-                char symbol = (char) ('a' + i);
-                alphabet.addCharacter(symbol);
-            }
-
-            // Lire le nombre d'états
-            int numStates = Integer.parseInt(scanner.nextLine());
-
-            // Créer les états et les ajouter à la liste des états
-            for (int i = 0; i < numStates; i++) {
-                Etat state = new Etat(Integer.toString(i), false, false); // Créer un état avec l'indice i comme identifiant
-                states.add(state);
-            }
-
-            // Lire les états initiaux
-            String[] initialStates = scanner.nextLine().split(" ");
-            for (String state : initialStates) {
-                int stateIndex = Integer.parseInt(state);
-                if (stateIndex >= 0 && stateIndex < states.size()) {
-                    states.get(stateIndex).setInitial(true);
-                } else {
-                    System.out.println("Indice d'état initial invalide : " + stateIndex);
-                }
-            }
-
-            // Lire les états terminaux
-            String[] finalStates = scanner.nextLine().split(" ");
-            for (String state : finalStates) {
-                int stateIndex = Integer.parseInt(state);
-                if (stateIndex >= 0 && stateIndex < states.size()) {
-                    states.get(stateIndex).setFinal(true);
-                } else {
-                    System.out.println("Indice d'état final invalide : " + stateIndex);
-                }
-            }
-
-            // Lire le nombre de transitions
-            int numTransitions = Integer.parseInt(scanner.nextLine());
-
-            // Lire les transitions
-            for (int i = 0; i < numTransitions; i++) {
-                String transition = scanner.nextLine();
-
-                // Analyser la transition
-                String[] parts = transition.split(" ");
-                if (parts.length >= 3) {
-                    int startStateIndex = Integer.parseInt(parts[0]);
-                    char symbol = parts[1].charAt(0);
-                    int endStateIndex = Integer.parseInt(parts[2]);
-
-                    // Vérifier la validité des indices avant l'accès
-                    if (startStateIndex >= 0 && startStateIndex < states.size() &&
-                            endStateIndex >= 0 && endStateIndex < states.size()) {
-
-                        // Ajouter la transition à l'état de départ correspondant
-                        Etat startState = states.get(startStateIndex);
-                        Etat endState = states.get(endStateIndex);
-                        startState.addTransition(new Transition(endState, symbol));
-                    } else {
-                        System.out.println("Indices d'état de transition non valides : " + startStateIndex + ", " + endStateIndex);
-                    }
-                } else {
-                    System.out.println("Format de transition invalide : " + transition);
-                }
-            }
-
-            scanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("Fichier introuvable : " + fileName);
-            e.printStackTrace();
-        } catch (NumberFormatException e) {
-            System.out.println("Format de nombre invalide dans le fichier : " + fileName);
-            e.printStackTrace();
-        }
-    }
-
-
-     */
-
     public void loadFromFile(String fileName) {
         try {
             File file = new File(fileName);
@@ -200,16 +79,7 @@ public class Automate {
     }
 
 
-
-
-
-
-
     //===========================================================================================================//
-
-
-
-
 
 
     public boolean isDeterministic() {
@@ -281,10 +151,7 @@ public class Automate {
         return isDeterministic() && isComplete();
     }
 
-    public Automate toDeterministicCompleteAutomate() {
-        // Implémentez la logique pour obtenir l'automate déterministe complet équivalent
-        return null;
-    }
+
 
     public void printStandardAutomate() {
         System.out.println("Automate standardisé :\n");
@@ -300,140 +167,6 @@ public class Automate {
         }
     }
 
-
-
-    /* ===================================== METHODE FONCTIONNELLE MAIS MOCHE ======================================================
-
-
-    public void displayTransitionsTable() {
-        // Récupérer tous les symboles de l'alphabet
-        Set<Character> alphabetSymbols = alphabet.getCharacters();
-
-        // Créer la première ligne du tableau avec les en-têtes
-        StringBuilder headerLine = new StringBuilder("------------------------------------------------------\n");
-        headerLine.append("| État   |");
-        for (char symbol : alphabetSymbols) {
-            headerLine.append(String.format("%7c  |", symbol));
-        }
-        headerLine.append("\n------------------------------------------------------");
-
-        // Afficher la première ligne avec les en-têtes
-        System.out.println(headerLine);
-
-        // Parcourir chaque état pour afficher les transitions
-        for (Etat state : states) {
-            // Préparer la ligne pour l'état
-            StringBuilder stateLine = new StringBuilder("| ");
-            if (state.isInitial() && state.isFinal()) {
-                stateLine.append("<--> ");
-            } else if (state.isInitial()) {
-                stateLine.append("--> ");
-            } else if (state.isFinal()) {
-                stateLine.append("    ");
-            } else {
-                stateLine.append("      ");
-            }
-            stateLine.append(state.getName());
-            if (state.isFinal()) {
-                stateLine.append(" <-- ");
-            } else if (state.isInitial() && !state.isFinal()) {
-                stateLine.append(" --> ");
-            } else {
-                stateLine.append("     ");
-            }
-            stateLine.append("|");
-
-            // Récupérer les transitions de l'état
-            Map<Character, String> transitionMap = new HashMap<>();
-            for (Transition transition : state.getTransitions()) {
-                transitionMap.put(transition.getSymbol(), transition.getTargetState().getName());
-            }
-
-            // Ajouter les transitions dans l'ordre des symboles de l'alphabet
-            for (char symbol : alphabetSymbols) {
-                String targetState = transitionMap.getOrDefault(symbol, "");
-                stateLine.append(String.format("%7s  |", targetState));
-            }
-
-            // Afficher la ligne de l'état avec ses transitions
-            System.out.println(stateLine);
-        }
-
-        // Afficher la ligne de fin du tableau
-        System.out.println("------------------------------------------------------");
-    }
-
-
-    private String getTransitionSymbol(Etat state, char symbol) {
-        for (Transition transition : state.getTransitions()) {
-            if (transition.getSymbol() == symbol) {
-                return " " + transition.getTargetState().getName() + " ";
-            }
-        }
-        return "      ";
-    }
-    ========================================================================================================
-     */
-
-
-
-    /* =================================== AFFICHAGE A MOITIE FONCTIONNEL MAIS BEAU =========================================
-
-    public void displayTransitionsTable() {
-        // Récupérer tous les symboles de l'alphabet
-        Set<Character> alphabetSymbols = alphabet.getCharacters();
-
-        // Déterminer la largeur de chaque colonne
-        int stateColumnWidth = 10; // Largeur de la colonne des états
-        int symbolColumnWidth = 10; // Largeur de la colonne des symboles
-
-        // En-tête du tableau
-        System.out.println("-------------------------------------------------------------");
-        System.out.printf("| %-" + stateColumnWidth + "s |", "État");
-
-        for (char symbol : alphabetSymbols) {
-            System.out.printf("%-" + symbolColumnWidth + "s |", symbol);
-        }
-        System.out.println("\n-------------------------------------------------------------");
-
-        // Affichage des transitions
-        for (Etat state : states) {
-            StringBuilder stateLine = new StringBuilder("|");
-
-            // Formatage de l'état avec les flèches
-            String stateName = state.getName();
-            if (state.isInitial() && state.isFinal()) {
-                stateName = "<-->" + stateName;
-            } else if (state.isInitial()) {
-                stateName = "--> " + stateName;
-            } else if (state.isFinal()) {
-                stateName = stateName + " <--";
-            }
-
-            // Ajouter l'état à la ligne
-            stateLine.append(String.format(" %-" + stateColumnWidth + "s |", stateName));
-
-            // Créer une map pour stocker les transitions de l'état
-            Map<Character, String> transitionMap = new HashMap<>();
-            for (Transition transition : state.getTransitions()) {
-                transitionMap.put(transition.getSymbol(), transition.getTargetState().getName());
-            }
-
-            // Ajouter les transitions pour chaque symbole de l'alphabet
-            for (char symbol : alphabetSymbols) {
-                String targetState = transitionMap.getOrDefault(symbol, "");
-                stateLine.append(String.format(" %-" + symbolColumnWidth + "s |", targetState));
-            }
-
-            // Afficher la ligne de l'état avec ses transitions
-            System.out.println(stateLine);
-        }
-
-        // Bas du tableau
-        System.out.println("-------------------------------------------------------------");
-    }
-
-   ============================================================================================================*/
 
 
     public void displayTransitionsTable() {
@@ -486,12 +219,18 @@ public class Automate {
             System.out.println(stateLine);
         }
 
+        // Ajouter la ligne pour l'état P
+        StringBuilder statePLine = new StringBuilder("|");
+        statePLine.append(String.format(" %-" + stateColumnWidth + "s |", "P"));
+
+        for (char symbol : alphabetSymbols) {
+            statePLine.append(String.format(" %-" + symbolColumnWidth + "s |", "P"));
+        }
+
+        // Afficher la ligne de l'état P
+        System.out.println(statePLine);
+
         // Bas du tableau
         System.out.println("-------------------------------------------------------------");
     }
-
-
-
-
-
 }
